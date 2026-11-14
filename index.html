@@ -335,7 +335,14 @@
             if (entry.course) rows.push(['Course', entry.course, 'strong']);
             const conducted = conductedText(entry.start, entry.end);
             if (conducted) rows.push(['Conducted', conducted, 'strong']);
-            if (grade) rows.push(['Grade', grade, 'strong']);
+            if (grade) {
+                if (/^\d+(\.\d+)?%$/.test(grade)) {
+                    rows.push(['Score', grade, 'strong']);
+                    if (entry.label) rows.push(['Grade', entry.label, 'strong']);
+                } else {
+                    rows.push(['Grade', grade, 'strong']);      // older certificates with a text grade
+                }
+            }
             if (entry.issued) rows.push(['Date of issue', formatDate(entry.issued), 'strong']);
             rows.push(['Issuing body', 'Daman Medical Training and Research Center', 'strong']);
             rows.push(['Register status', 'Valid', 'good']);
