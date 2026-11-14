@@ -7,9 +7,9 @@
 <title>Certificate Verification | Daman Medical Training and Research Center</title>
 <style>
     :root {
-        --navy: #1c3d8f;
-        --navy-deep: #12296a;
-        --teal: #1565d8;
+        --navy: #002E60;
+        --navy-deep: #001F42;
+        --teal: #01539D;
         --slate: #4a5a78;
         --ink: #1d2b3a;
         --muted: #627181;
@@ -35,7 +35,7 @@
     }
 
     /* ---------- header ---------- */
-    .site-header { background: var(--navy-deep); border-bottom: 3px solid var(--teal); }
+    .site-header { background: var(--navy-deep); border-bottom: 3px solid #BE9B3B; }
     .site-header .wrap {
         max-width: 720px; margin: 0 auto; padding: 22px 20px 20px;
         display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;
@@ -100,6 +100,7 @@
     dd.mono { font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 15px; letter-spacing: .02em; }
     dd.strong { font-weight: 600; }
     dd.good { color: var(--ok); font-weight: 600; }
+    dd.attend { color: #b45309; font-weight: 700; }
 
     .loading-bar { height: 3px; background: var(--line); overflow: hidden; border-radius: 0 0 2px 2px; display: none; }
     .loading .loading-bar { display: block; }
@@ -164,6 +165,11 @@
         A certificate is genuine only if its <strong>code</strong>, the <strong>name</strong> and the
         <strong>course</strong> printed on it match the official register of the centre. If the details above
         differ from the paper or PDF in front of you, treat the certificate as unverified.
+    </p>
+    <p class="note">
+        <strong>Certificate of Completion:</strong> the holder passed the course assessment.
+        <strong>Certificate of Attendance:</strong> the holder attended the course but did not pass the assessment.
+        Where a grade is shown, it is the grade recorded by the centre.
     </p>
 </main>
 
@@ -313,10 +319,19 @@
         document.getElementById('checked').textContent = 'Checked against the official register on ' + today + '.';
 
         if (entry) {
-            render('ok', 'Verified', 'This certificate is authentic',
-                   'It appears in the official register of Daman Medical Training and Research Center.');
+            const attendance = entry.type === 'attendance';
+            render('ok', 'Verified',
+                   attendance ? 'Authentic certificate of attendance' : 'Authentic certificate of completion',
+                   attendance
+                       ? 'This certificate is genuine, but it only confirms that the holder ATTENDED the course. ' +
+                         'The holder did NOT pass the assessment. It is not a certificate of completion.'
+                       : 'This certificate is genuine. The holder completed the course and passed the assessment.');
             showRecipient('Awarded to', name);
-            const rows = [['Certificate ID', code, 'mono']];
+            const rows = [['Certificate ID', code, 'mono'],
+                          ['Certificate', attendance ? 'Certificate of Attendance' : 'Certificate of Completion', 'strong'],
+                          ['Result', attendance ? 'Attended only: did not pass the assessment'
+                                                : 'Passed: completed the course and passed the assessment',
+                           attendance ? 'attend' : 'good']];
             if (entry.course) rows.push(['Course', entry.course, 'strong']);
             const conducted = conductedText(entry.start, entry.end);
             if (conducted) rows.push(['Conducted', conducted, 'strong']);
